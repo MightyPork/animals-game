@@ -1,6 +1,7 @@
-#include "default.h"
+
 #include "utils.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 /*
@@ -9,18 +10,20 @@
 * Returned string is alloc'd and the caller has the
 * responsibility to clean it up.
 */
-char* str_replace(char* subject_ptr, char* search, char* replace) {
+char *str_replace(char *subject, char *search, char *replace) {
 	
-	int cnt = 0;
-	char* find_ptr;
+	char *subject_ptr = subject;
+	char *find_ptr;
 	
+	// lengths
 	int search_l = strlen(search);
 	int replace_l = strlen(replace);
 	int subject_l = strlen(subject_ptr);
 	
-	
+	// (step 1) count occurences and allocate target string
+	int cnt = 0;
 	find_ptr = subject_ptr-1;
-	while(TRUE) {
+	while(1) {
 		// find a match
 		find_ptr = strstr( (find_ptr+1), search);
 		if(find_ptr == NULL) break;
@@ -31,16 +34,15 @@ char* str_replace(char* subject_ptr, char* search, char* replace) {
 	// allocate output buffer
 	int len = strlen(subject_ptr) - cnt*search_l + cnt*replace_l;
 	
-	char* target_ptr = (char *) malloc( len + 1 );
+	char *target_ptr = (char *) malloc( len + 1 );
 	
-	
+	// (step 2) fill target string
 	int copy_begin = 0;
 	int paste_pos = 0;
 	int copy_size = 0;
 	
 	find_ptr = subject_ptr-1;
-	while(TRUE) {
-		
+	while(1) {
 		// try find next match
 		find_ptr = strstr( (find_ptr+1), search);
 		
@@ -63,7 +65,6 @@ char* str_replace(char* subject_ptr, char* search, char* replace) {
 	
 	// add in the remainder
 	if(copy_begin < subject_l) strcpy( (target_ptr+paste_pos), (subject_ptr+copy_begin) );
-	
 	
 	return target_ptr;
 }
