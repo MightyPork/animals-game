@@ -87,7 +87,7 @@ void parse_opts (int argc, char* argv[]) {
 	}
 	
 	log_msg(INFO, "Verbose mode enabled.");
-	log_msg(INFO, "Data file: <fg:lblue>%s</fg>", datafile);
+	log_msg(INFO, "Data file: %s", datafile);
 }
 
 void print_help() {
