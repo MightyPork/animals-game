@@ -1,18 +1,19 @@
 
 CC=gcc
-CFLAGS=-g -Wall -std=c99 -ftrapv -O2 -Werror -Wshadow -Wundef -save-temps -Werror-implicit-function-declaration
+CFLAGS=-g -Wall -std=gnu99 -O2 -Wfatal-errors 
+#-Werror-implicit-function-declaration -Werror  -Wundef -ftrapv -O2 -Wshadow -save-temps 
 RM=rm -f
 
-TARGET=bin/animals
+TARGET=animals
 SDIR = src
 
-_SRC=main.c myfn.c
+_SRC=main.c
 
-SRC=$(patsubst %, $(SDIR)/%, $(_SRC))
+SRC=$(patsubst %,$(SDIR)/%,$(_SRC))
 
-OBJS = $(patsubst %.c, %.o, $(SRC))
+OBJS = $(patsubst %.c,%.o,$(SRC))
 
-all: clean build
+all: purge build clean
 
 $(TARGET): build
 
@@ -32,12 +33,17 @@ depend: .depend
 
 
 .depend: $(SRC)
-	$(RM) ./.depend
+	@$(RM) ./.depend
 	$(CC) $(CFLAGS) -MM $^>>./.depend;
 
 
-clean:
-	@-printf '\e[36mClean up\e[0m\n'
+purge:
+	@-printf '\e[36mPurge\e[0m\n'
 	$(RM) *~ src/*~ *.i src/*.i *.s src/*.s *.o src/*.o $(TARGET)
+
+
+clean:
+	@-printf '\e[36mClean\e[0m\n'
+	$(RM) *~ src/*~ *.o src/*.o
 	
 include .depend
