@@ -1,4 +1,5 @@
 #include "default.h"
+#include "ui.h"
 
 #include <getopt.h>
 
@@ -85,8 +86,8 @@ void parse_opts (int argc, char* argv[]) {
 		exit(1);
 	}
 	
-	msg(INFO, "Verbose mode enabled.");
-	msg(INFO, "Data file: <fg:lblue>%s</fg>", datafile);
+	log_msg(INFO, "Verbose mode enabled.");
+	log_msg(INFO, "Data file: <fg:lblue>%s</fg>", datafile);
 }
 
 void print_help() {

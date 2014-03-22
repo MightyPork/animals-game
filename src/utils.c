@@ -46,4 +46,3 @@ char* str_replace(char* search , char* replace , char* subject) {
 	
 	return new_subject;
 }
-

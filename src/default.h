@@ -12,7 +12,7 @@
 	#include "types.h"
 	#include "macros.h"
 	#include "globals.h"
+	#include "log.h"
 	#include "utils.h"
-	#include "ui.h"
 
 #endif

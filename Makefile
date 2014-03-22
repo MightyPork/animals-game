@@ -7,7 +7,7 @@ RM=rm -f
 TARGET=animals
 SDIR = src
 
-_SRC=main.c ui.c utils.c colors.c
+_SRC=main.c ui.c utils.c colors.c log.c
 
 SRC=$(patsubst %,$(SDIR)/%,$(_SRC))
 

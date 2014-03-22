@@ -3,7 +3,7 @@
 
 	// color macros
 	#define RESET      "\e[0m"
-	 #define FR          RESET	
+	#define FR          RESET	
 	#define BOLD       "\e[1m"
 	#define UNDERLINE  "\e[4m"
 	#define BLINK      "\e[5m"
@@ -17,7 +17,7 @@
 	#define HIDDEN_R     "\e[28m"
 	
 	#define FG_DEFAULT   "\e[39m"
-	 #define FG_BASE      FG_DEFAULT
+	#define FG_BASE      FG_DEFAULT
 	#define FG_BLACK     "\e[30m"
 	#define FG_RED       "\e[31m"
 	#define FG_GREEN     "\e[32m"
@@ -36,7 +36,7 @@
 	#define FG_WHITE     "\e[97m"
 	
 	#define BG_DEFAULT   "\e[49m"
-	 #define BG_BASE      BG_DEFAULT
+	#define BG_BASE      BG_DEFAULT
 	#define BG_BLACK     "\e[40m"
 	#define BG_RED       "\e[41m"
 	#define BG_GREEN     "\e[42m"
