@@ -12,20 +12,19 @@ SRC=$(patsubst %, $(SDIR)/%, $(_SRC))
 
 OBJS = $(patsubst %.c, %.o, $(SRC))
 
-all: clean pf build
-
-pf:
-	@-printf '\e[36mCompiling...\e[0m\n'
-	
+all: clean build
 
 $(TARGET): build
 
-build: $(OBJS)
-	@-printf '\n\e[36mLinking...\e[0m\n'
+build: .compilemsg $(OBJS)
+	@-printf '\e[36mLinking\e[0m\n'
 	$(CC) -o $(TARGET) $(OBJS) $(CFLAGS)
-	@-printf '\n'
+	
+.compilemsg:
+	@-printf '\e[36mCompilation\e[0m\n'
 
 run:
+	@-printf '\e[36mLaunching $(TARGET)\e[0m\n'
 	@-./$(TARGET)
 
 
@@ -38,8 +37,7 @@ depend: .depend
 
 
 clean:
-	@-printf '\e\n[36mCleaning...\e[0m\n'
+	@-printf '\e[36mClean up\e[0m\n'
 	$(RM) *~ src/*~ *.i src/*.i *.s src/*.s *.o src/*.o $(TARGET)
-	@-printf '\n'
 	
 include .depend
