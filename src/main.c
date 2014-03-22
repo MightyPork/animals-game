@@ -1,8 +1,11 @@
 #include "default.h"
 #include "ui.h"
 #include "log.h"
+#include "utils.h"
+
 
 #include <getopt.h>
+#include <string.h>
 
 
 
@@ -29,6 +32,13 @@ char* datafile = "animals.dat"; // extern
 
 /* main function */
 int main (int argc, char **argv) {
+	
+// 	char* out = "what the actual fuck is this fucking fuck fucking here, youn fucktard, go fuck yourself.";
+// 	
+// 	out = str_replace(out, "fuck", "<beep>");
+// 	
+// 	printf("\n%s\n", out);
+// 	
 	
 	parse_opts(argc, argv);
 

@@ -3,13 +3,11 @@
 
 	#include <stdio.h>
 	#include "colors.h"
-
-	// fn macros
-	#define println(text) puts(color_tags(text))
-	#define print(text) fputs(color_tags(text), stdout)
-	#define endl() puts("")
 	
 	// prototypes
 	char* get_input(int len, char* prompt);
+	void println(char* text);
+	void print(char* text);
+	void endl();
 
 #endif

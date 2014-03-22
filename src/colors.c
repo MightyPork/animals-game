@@ -63,7 +63,9 @@ char* color_tags(char* s) {
 	  
 	
 	for(int r=0; r<repl_count; r++) {
-		out = str_replace(table[r][0], table[r][1], out);
+		char* old = out;
+		out = str_replace(old, table[r][0], table[r][1]);
+		if(r>0) free(old);
  	}
  	
  	return out;
