@@ -1,48 +1,54 @@
 #include "default.h"
 #include "utils.h"
 
-/*
-* Search and replace a string with another string , in a string
-* 
-* http://www.binarytides.com/str_replace-for-c/
-*/
-char* str_replace(char* search , char* replace , char* subject) {
-	
-	char  *p = NULL , *old = NULL , *new_subject = NULL ;
-	int c = 0 , search_size;
-	
-	search_size = strlen(search);
-	
-	//Count how many occurences
-	for(p = strstr(subject , search) ; p != NULL ; p = strstr(p + search_size , search)) {
-		c++;
-	}
-	
-	//Final size
-	c = ( strlen(replace) - search_size )*c + strlen(subject);
-	
-	//New subject with new size
-	new_subject = malloc( c );
-	
-	//Set it to blank
-	strcpy(new_subject , "");
-	
-	//The start position
-	old = subject;
-	
-	for(p = strstr(subject , search) ; p != NULL ; p = strstr(p + search_size , search)) {
-		//move ahead and copy some text from original subject , from a certain position
-		strncpy(new_subject + strlen(new_subject) , old , p - old);
-		
-		//move ahead and copy the replacement text
-		strcpy(new_subject + strlen(new_subject) , replace);
-		
-		//The new start position after this search match
-		old = p + search_size;
-	}
-	
-	//Copy the part after the last search match
-	strcpy(new_subject + strlen(new_subject) , old);
-	
-	return new_subject;
-}
+#include <string.h>
+#include <ctype.h>
+#include <stddef.h>
+
+// TODO rewrite, super ugly and has a memory leak
+
+    char *
+    str_replace ( char *substr, char *replacement, char *string ){
+      char *tok = NULL;
+      char *newstr = NULL;
+      char *oldstr = NULL;
+      char *head = NULL;
+     
+      /* if either substr or replacement is NULL, duplicate string a let caller handle it */
+      if ( substr == NULL || replacement == NULL ) return string;
+      newstr = strdup(string);
+      head = newstr;
+      while ( (tok = strstr ( head, substr ))){
+		free(oldstr);
+		oldstr = NULL;
+        oldstr = newstr;
+        newstr = malloc( strlen ( oldstr ) - strlen ( substr ) + strlen ( replacement ) + 1 );
+        /*failed to alloc mem, free old string and return NULL */
+        if(newstr == NULL){
+          free(oldstr);
+          return NULL;
+        }
+        memcpy ( newstr, oldstr, tok - oldstr );
+        memcpy ( newstr + (tok - oldstr), replacement, strlen ( replacement ) );
+        memcpy ( newstr + (tok - oldstr) + strlen( replacement ), tok + strlen ( substr ), strlen ( oldstr ) - strlen ( substr ) - ( tok - oldstr ) );
+        memset ( newstr + strlen ( oldstr ) - strlen ( substr ) + strlen ( replacement ) , 0, 1 );
+        /* move back head right after the last replacement */
+        head = newstr + (tok - oldstr) + strlen( replacement );
+        free (oldstr);
+		oldstr = NULL;
+      }
+      
+      //if(head!=NULL) free(head);
+      if(oldstr!=NULL) free(string);
+      //if(newstr!=NULL) free(string);
+      //if(string!=NULL) free(string);
+      return newstr;
+    }
+
+
+
+
+
+
+
+

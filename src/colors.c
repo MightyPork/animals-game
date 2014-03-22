@@ -1,13 +1,14 @@
 #include "default.h"
 #include "colors.h"
+#include "utils.h"
 
-#define rows 46
+#define repl_count 46
 
 char* color_tags(char* s) {
 	
 	char* out = s;
 	
-	static char* table[rows][2] = {
+	static char* table[repl_count][2] = {
 		{"<b>", BOLD},
 		{"<u>", UNDERLINE},
 		{"<blink>", BLINK},
@@ -57,11 +58,11 @@ char* color_tags(char* s) {
 		{"<bg:lmagenta>", BG_LMAGENTA},  
 		{"<bg:lcyan>", BG_LCYAN},     
 		{"<bg:white>", BG_WHITE},   
-		{"</bg>", BG_DEFAULT},
+		{"</bg>", BG_DEFAULT}
 	};
 	  
 	
-	for(int r = 0; r < rows; r++ ) {
+	for(int r=0; r<repl_count; r++) {
 		out = str_replace(table[r][0], table[r][1], out);
  	}
  	

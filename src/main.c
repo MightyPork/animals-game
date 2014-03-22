@@ -1,7 +1,10 @@
 #include "default.h"
 #include "ui.h"
+#include "log.h"
 
 #include <getopt.h>
+
+
 
 #define OPTIONS_END {0,0,0,0}
 
@@ -81,7 +84,7 @@ void parse_opts (int argc, char* argv[]) {
 		}
 	}
 	
-	if(err_flag OR help_flag) {
+	if(err_flag || help_flag) {
 		print_help();
 		exit(1);
 	}
@@ -90,12 +93,13 @@ void parse_opts (int argc, char* argv[]) {
 	log_msg(INFO, "Data file: %s", datafile);
 }
 
+
 void print_help() {
-	println( "" );
+	endl();
 	println( " <u><b><fg:white>Animals Game<r>" );
 	println( " <fg:lmagenta>usage: animals [-v] [-f DB_FILE] [-h]<r>" );
 	println( "  <fg:white>-v, --verbose</fg>  Enable extra debug messages" );
 	println( "  <fg:white>-f, --file</fg>     Specify location of data file (default: animals.dat)" );
 	println( "  <fg:white>-h, --help</fg>     Show this help" );
-	println( "" );
+	endl();
 }

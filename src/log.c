@@ -2,12 +2,15 @@
 #include "log.h"
 #include "ui.h"
 
+#include <stdarg.h>
+
+
 void log_msg(int level, char* message, ...) {
 	
 	va_list args;
     va_start(args, message);
 	char* m;
-	if(vasprintf(&m, message, args) == -1) m = message;
+	if(vasprintf(&m, message, args) == -1) return;
     va_end(args);
 	
 	switch(level) {
@@ -23,6 +26,7 @@ void log_msg(int level, char* message, ...) {
 			print("<fg:red>ERROR:</fg> ");
 			println(m);
 			break;
-			
 	}
+	
+	free(m);
 }

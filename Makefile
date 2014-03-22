@@ -1,7 +1,7 @@
 
 CC=gcc
-CFLAGS=-g -Wall -std=gnu99 -O2 -Wfatal-errors
-#-Werror-implicit-function-declaration -Werror  -Wundef -ftrapv -O2 -Wshadow -save-temps 
+CFLAGS=-g -Wall -std=gnu99 -O0 -Wfatal-errors -save-temps
+#-Werror-implicit-function-declaration -Werror  -Wundef -ftrapv -O2 -Wshadow 
 RM=rm -f
 
 TARGET=animals
@@ -39,11 +39,11 @@ depend: .depend
 
 purge:
 	@-printf '\e[36mPurge\e[0m\n'
-	$(RM) *~ src/*~ *.i src/*.i *.s src/*.s *.o src/*.o $(TARGET)
+	$(RM) *~ src/*~ *.i *.s *.o src/*.o $(TARGET)
 
 
 clean:
 	@-printf '\e[36mClean\e[0m\n'
-	$(RM) *~ src/*~ *.o src/*.o
+	$(RM) *~ src/*~ *.o src/*.o *.i *.s 
 	
 include .depend
