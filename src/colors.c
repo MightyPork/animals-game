@@ -66,12 +66,4 @@ char* color_tags(char* s) {
  	}
  	
  	return out;
- 	
-// 	char* buffer;
-// 	
-// 	if(asprintf(&buffer, "%s%s%s", COLOR_R, out, COLOR_R) == -1) {
-// 		return s;
-// 	}
-// 	
-// 	return buffer;
 }
