@@ -6,5 +6,10 @@
 	#define and &&
 	#define not !
 	#define xor ^
+	
+	#define OR ||
+	#define AND &&
+	#define NOT !
+	#define XOR ^
 
 #endif

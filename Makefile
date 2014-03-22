@@ -1,13 +1,13 @@
 
 CC=gcc
-CFLAGS=-g -Wall -std=gnu99 -O2 -Wfatal-errors 
+CFLAGS=-g -Wall -std=gnu99 -O2 -Wfatal-errors
 #-Werror-implicit-function-declaration -Werror  -Wundef -ftrapv -O2 -Wshadow -save-temps 
 RM=rm -f
 
 TARGET=animals
 SDIR = src
 
-_SRC=main.c
+_SRC=main.c ui.c utils.c colors.c
 
 SRC=$(patsubst %,$(SDIR)/%,$(_SRC))
 

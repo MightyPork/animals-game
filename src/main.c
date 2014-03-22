@@ -17,7 +17,7 @@ void print_help();
 // == variables ==
 
 bool verbose = FALSE; // extern
-char* datafile = "animals.db"; // extern
+char* datafile = "animals.dat"; // extern
 
 
 
@@ -35,15 +35,17 @@ int main (int argc, char **argv) {
 void parse_opts (int argc, char* argv[]) {
 	bool err_flag = FALSE;
 	bool help_flag = FALSE;
+	
+	struct option long_opts[] =
+	{
+		{ "verbose", no_argument,       &verbose,   TRUE },
+		{ "help",    no_argument,       &help_flag, TRUE },
+		{ "file",    optional_argument, 0,          'f'  },
+		OPTIONS_END
+	};
 
-	while(1) {
+	while(TRUE) {
 		
-		static struct option long_opts[] =
-		{
-			{ "verbose", no_argument,       &verbose, TRUE },
-			{ "file",    optional_argument, 0,        'f'  },
-			OPTIONS_END
-		};
 		
 		int long_opts_cnt = 0;
 		char c = getopt_long(argc, argv, "hvf:", long_opts, &long_opts_cnt);
@@ -78,20 +80,21 @@ void parse_opts (int argc, char* argv[]) {
 		}
 	}
 	
-	if(err_flag or help_flag) {
-		print_help();		
+	if(err_flag OR help_flag) {
+		print_help();
 		exit(1);
 	}
-
-	if(verbose) puts("Verbose mode enabled.");
 	
-	printf("%s\n",datafile);
+	msg(INFO, "Verbose mode enabled.");
+	msg(INFO, "Data file: <fg:lblue>%s</fg>", datafile);
 }
 
 void print_help() {
-	puts("Animals Game");
-	puts("usage: animals [-v] [-f DB_FILE] [-h]");
-	puts("-v, --verbose  Enable extra debug messages");
-	puts("-f, --file     Specify location of database file (default: animals.db)");
-	puts("-h, --help     Show this help");	
+	println( "" );
+	println( " <u><b><fg:white>Animals Game<r>" );
+	println( " <fg:lmagenta>usage: animals [-v] [-f DB_FILE] [-h]<r>" );
+	println( "  <fg:white>-v, --verbose</fg>  Enable extra debug messages" );
+	println( "  <fg:white>-f, --file</fg>     Specify location of data file (default: animals.dat)" );
+	println( "  <fg:white>-h, --help</fg>     Show this help" );
+	println( "" );
 }
