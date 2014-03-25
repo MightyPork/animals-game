@@ -26,9 +26,14 @@ void println(char* text) {
 }
 
 void print(char* text) {
-	text = color_tags(text);
-	fputs(text, stdout);
-	free(text);
+	char* colorized = color_tags(text);
+	if(colorized != NULL) {
+		fputs(colorized, stdout);
+		free(colorized);
+	}else{
+		puts("ERROR in COLOR_TAGS");
+		fputs(text, stdout);
+	}
 }
 
 void endl() {

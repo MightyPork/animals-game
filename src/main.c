@@ -3,11 +3,8 @@
 #include "log.h"
 #include "utils.h"
 
-
 #include <getopt.h>
 #include <string.h>
-
-
 
 #define OPTIONS_END {0,0,0,0}
 
@@ -33,7 +30,17 @@ char* datafile = "animals.dat"; // extern
 /* main function */
 int main (int argc, char **argv) {
 	
-	parse_opts(argc, argv);
+// 	char* src = "dog dd d d d d sgdgsd";
+// 	char* new = str_replace(src, "d", "XY");
+// 	new = str_replace(new, "X", "CC");
+// 	printf("\n%s\n", new);
+// 	
+// 	if(new == NULL)  {
+// 		printf("fail");
+// 		exit(0);
+// 	}
+	
+  	parse_opts(argc, argv);
 
 	exit(0);
 }
@@ -101,8 +108,8 @@ void print_help() {
 	endl();
 	println( " <u><b><fg:white>Animals Game<r>" );
 	println( " <fg:lmagenta>usage: animals [-v] [-f DB_FILE] [-h]<r>" );
-	println( "  <fg:white>-v, --verbose</fg>  Enable extra debug messages" );
-	println( "  <fg:white>-f, --file</fg>     Specify location of data file (default: animals.dat)" );
-	println( "  <fg:white>-h, --help</fg>     Show this help" );
+	println( "  <b><fg:white>-v, --verbose<r>  Enable extra debug messages" );
+	println( "  <b><fg:white>-f, --file<r>     Specify location of data file (default: animals.dat)" );
+	println( "  <b><fg:white>-h, --help<r>     Show this help" );
 	endl();
 }

@@ -5,18 +5,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
-* Replace occurences in input string.
-* 
-* Returned string is alloc'd and the caller has the
-* responsibility to clean it up.
-*/
+
 char* str_replace(const char *src, const char *from, const char *to) {
 	
+	if(src == NULL || from == NULL || to == NULL) return NULL;
+	
 	// helper pointers
-	const char *sp; // src pointer
-	char *dp; // dest pointer
-	const char *mp; // match pointer
+	const char * sp; // src pointer
+	const char * mp; // match pointer
+	char * dp; // dest pointer (for writing)
+	
 	
 	// lengths
 	size_t from_len = strlen(from);
@@ -35,16 +33,18 @@ char* str_replace(const char *src, const char *from, const char *to) {
 	
 	// compute dest size
 	size_t len = src_len;
-	size_t sub = (from_len - to_len)*count;
+	long int sub = (from_len - to_len)*count;
+	
 	// sanity check
 	if(from_len >= to_len) {
-		if(sub > len || sub < 0) return NULL; // integer overflow / bad arith
+		if(sub > len || sub < 0) return NULL;
 	} else {
-		if((len-sub) < 0 || sub > 0) return NULL; // integer overflow / underflow
+		if((len-sub) < 0 || sub > 0) return NULL;
 	}
 	
 	// allocate output buffer
-	char *dest = malloc( len - sub + 1 );
+	size_t actual_size = (len - sub) + 1;
+	char *dest = malloc( actual_size );
 	
 	// fill output buffer
 	if(dest != NULL) {
@@ -57,20 +57,21 @@ char* str_replace(const char *src, const char *from, const char *to) {
 			if(mp == NULL) break; // end of matches
 			
 			// copy chunk before match
-			memcpy(dp, sp, sp - mp);
-			dp += sp-mp;
+			memcpy(dp, sp, mp - sp);
+			dp += mp - sp;
 			
 			// copy replacement
 			memcpy(dp, to, to_len);
 			dp += to_len;
 			
+			// advance past match
 			sp = mp + from_len;
 		}
 		
-		// add in the remainder
-		if(sp < src + src_len) {
-			memcpy(dp, sp, (src + src_len) - sp);
-		}
+		// copy tail
+		size_t k = src_len - (sp - src) + 1;
+		memcpy(dp, sp, k);
+		
 	}
 	
 	return dest;

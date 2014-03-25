@@ -1,6 +1,6 @@
 
 CC=gcc
-CFLAGS=-g -Wall -std=gnu99 -O2 -Wfatal-errors
+CFLAGS=-g -Wall -std=gnu99 -O0 -Wfatal-errors
 #-Werror-implicit-function-declaration -Werror  -Wundef -ftrapv -O2 -Wshadow -save-temps
 RM=rm -f
 
