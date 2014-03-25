@@ -1,6 +1,8 @@
 #include "default.h"
 #include "utils.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /*
@@ -9,61 +11,67 @@
 * Returned string is alloc'd and the caller has the
 * responsibility to clean it up.
 */
-char *str_replace(char *subject, char *search, char *replace) {
+char* str_replace(const char *src, const char *from, const char *to) {
 	
-	char *subject_ptr = subject;
-	char *find_ptr;
+	// helper pointers
+	const char *sp; // src pointer
+	char *dp; // dest pointer
+	const char *mp; // match pointer
 	
 	// lengths
-	int search_l = strlen(search);
-	int replace_l = strlen(replace);
-	int subject_l = strlen(subject_ptr);
+	size_t from_len = strlen(from);
+	size_t to_len = strlen(to);
+	size_t src_len = strlen(src);
 	
-	// (step 1) count occurences and allocate target string
-	int cnt = 0;
-	find_ptr = subject_ptr-1;
+	// count matches
+	size_t count = 0;
+	sp = src;
 	while(1) {
-		// find a match
-		find_ptr = strstr( (find_ptr+1), search);
-		if(find_ptr == NULL) break;
-		
-		cnt++; // count it
+		mp = strstr(sp, from); // find next match
+		if(mp == NULL) break; // end of matches
+		count++;
+		sp = mp + from_len; // advance past match
+	}
+	
+	// compute dest size
+	size_t len = src_len;
+	size_t sub = (from_len - to_len)*count;
+	// sanity check
+	if(from_len >= to_len) {
+		if(sub > len || sub < 0) return NULL; // integer overflow / bad arith
+	} else {
+		if((len-sub) < 0 || sub > 0) return NULL; // integer overflow / underflow
 	}
 	
 	// allocate output buffer
-	int len = strlen(subject_ptr) - cnt*search_l + cnt*replace_l;
+	char *dest = malloc( len - sub + 1 );
 	
-	char *target_ptr = (char *) malloc( len + 1 );
-	
-	// (step 2) fill target string
-	int copy_begin = 0;
-	int paste_pos = 0;
-	int copy_size = 0;
-	
-	find_ptr = subject_ptr-1;
-	while(1) {
-		// try find next match
-		find_ptr = strstr( (find_ptr+1), search);
+	// fill output buffer
+	if(dest != NULL) {
 		
-		if(find_ptr == NULL) break;
+		sp = src; // src pointer
+		dp = dest; // dest pointer
 		
-		// compute copy coords
-		copy_size = (find_ptr-subject_ptr) - copy_begin;
+		while(1) {
+			mp = strstr(sp, from); // find next match
+			if(mp == NULL) break; // end of matches
+			
+			// copy chunk before match
+			memcpy(dp, sp, sp - mp);
+			dp += sp-mp;
+			
+			// copy replacement
+			memcpy(dp, to, to_len);
+			dp += to_len;
+			
+			sp = mp + from_len;
+		}
 		
-		// copy in chunk before replacement
-		strncpy( (target_ptr+paste_pos), (subject_ptr+copy_begin), copy_size);
-		paste_pos += copy_size;
-		
-		// copy in replacement
-		strcpy( (target_ptr+paste_pos), replace);
-		paste_pos += replace_l;
-		
-		// move copy_begin pointer to the end of find
-		copy_begin += copy_size + search_l;
+		// add in the remainder
+		if(sp < src + src_len) {
+			memcpy(dp, sp, (src + src_len) - sp);
+		}
 	}
 	
-	// add in the remainder
-	if(copy_begin < subject_l) strcpy( (target_ptr+paste_pos), (subject_ptr+copy_begin) );
-	
-	return target_ptr;
+	return dest;
 }
