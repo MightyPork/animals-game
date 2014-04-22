@@ -7,6 +7,8 @@
 
 void log_msg(int level, char* message, ...) {
 	
+	if(!verbose) return;
+
 	va_list args;
     va_start(args, message);
 	char* m;
@@ -29,4 +31,5 @@ void log_msg(int level, char* message, ...) {
 	}
 	
 	free(m);
+
 }

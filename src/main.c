@@ -30,18 +30,13 @@ char* datafile = "animals.dat"; // extern
 /* main function */
 int main (int argc, char **argv) {
 	
-// 	char* src = "dog dd d d d d sgdgsd";
-// 	char* new = str_replace(src, "d", "XY");
-// 	new = str_replace(new, "X", "CC");
-// 	printf("\n%s\n", new);
-// 	
-// 	if(new == NULL)  {
-// 		printf("fail");
-// 		exit(0);
-// 	}
-	
   	parse_opts(argc, argv);
 
+	if(ask_yes_no("Want quit?")) {
+		return 0;
+	} else {
+		println("<fg:blue>Too bad, quitting anyway.</fg>");
+	}
 	exit(0);
 }
 
@@ -88,6 +83,7 @@ void parse_opts (int argc, char* argv[]) {
 
 			default:
 				printf("Unknown option %c\n", c);
+				// fall-thru
 			case '?':
 				err_flag = TRUE;
 				break;

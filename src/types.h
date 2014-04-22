@@ -1,7 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-	// boolean type
+	/* boolean type */
 	typedef int bool;
 	#define TRUE 1
 	#define FALSE 0
