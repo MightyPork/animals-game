@@ -1,5 +1,4 @@
-#include "default.h"
-#include "utils.h"
+#include "str_replace.h"
 
 #include <stdio.h>
 #include <stdlib.h>

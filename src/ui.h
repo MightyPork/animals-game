@@ -1,7 +1,5 @@
 #ifndef UI_H
 #define UI_H
-
-	#include "colors.h"
 	
 	/* Ask for confirmation */
 	bool ask_yes_no(char* prompt);

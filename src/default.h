@@ -6,7 +6,24 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
-	#include "types.h"
-	#include "globals.h"
+
+	/* === CUSTOM TYPES === */
+	
+	/* boolean type */
+	typedef int bool;
+	#define TRUE 1
+	#define FALSE 0
+	
+	
+	/* === GLOBAL VARS === */
+
+	// verbose mode
+	extern bool verbose;
+	
+	
+	/* === DEFAULT INCLUDED COMPONENTS === */
+	
+	#include "log.h"
+	#include "ui.h"
 
 #endif

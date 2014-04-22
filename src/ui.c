@@ -1,5 +1,6 @@
 #include "default.h"
 #include "ui.h"
+#include "colors.h"
 
 // private prototype
 char* _print_prompt(char* prompt);
@@ -10,19 +11,29 @@ bool ask_yes_no(char* prompt) {
 	while(1) {
 		char c;
 		
+		endl();
+		print(" ");
 		println(prompt);
+		endl();
 		_print_prompt("Y/N");
 		
 		c = getchar();
 		while ( getchar() != '\n' ); // clear
 		
 		// yes
-		if(c=='y' || c=='Y' || c=='a' || c=='A') return TRUE;
+		if(c=='y' || c=='Y' || c=='a' || c=='A') {
+			endl();
+			return TRUE;
+		}
 		
 		// no
-		if(c=='n' || c=='N') return FALSE;
+		if(c=='n' || c=='N') {
+			endl();
+			return FALSE;
+		}
 		
-		print("<fg:red>Please, try again.</fg>\n");
+		endl();
+		print(" <b><bg:red><fg:white>Please, try again.<r>\n");
 	}
 }
 

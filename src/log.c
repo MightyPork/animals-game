@@ -1,6 +1,5 @@
 #include "default.h"
 #include "log.h"
-#include "ui.h"
 
 #include <stdarg.h>
 

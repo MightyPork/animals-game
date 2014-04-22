@@ -1,6 +1,6 @@
 #include "default.h"
 #include "colors.h"
-#include "utils.h"
+#include "str_replace.h"
 
 #define repl_count 46
 

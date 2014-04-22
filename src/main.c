@@ -1,7 +1,5 @@
 #include "default.h"
-#include "ui.h"
-#include "log.h"
-#include "utils.h"
+#include "game.h"
 
 #include <getopt.h>
 #include <string.h>
@@ -21,7 +19,8 @@ void print_help();
 // == variables ==
 
 bool verbose = FALSE; // extern
-char* datafile = "animals.dat"; // extern
+
+char* datafile = "animals.dat";
 
 
 
@@ -32,11 +31,8 @@ int main (int argc, char **argv) {
 	
   	parse_opts(argc, argv);
 
-	if(ask_yes_no("Want quit?")) {
-		return 0;
-	} else {
-		println("<fg:blue>Too bad, quitting anyway.</fg>");
-	}
+	game_start(datafile);
+	
 	exit(0);
 }
 

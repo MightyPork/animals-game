@@ -1,8 +1,6 @@
 #ifndef LOG_H
 #define LOG_H
 
-	#include "types.h"
-
 	// log levels
 	#define INFO 0
 	#define ERROR 1
