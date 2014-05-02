@@ -20,7 +20,7 @@ void print_help();
 
 bool verbose = FALSE; // extern
 
-char* datafile = "animals.dat";
+char* datafile = "animals.txt";
 
 
 

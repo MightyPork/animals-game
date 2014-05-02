@@ -11,167 +11,232 @@ typedef enum { QST = 0, ANS = 1 } NTYPE;
 // null node index
 #define NIL -1
 
-typedef int ni_t; // node index
-
 typedef struct NODE NODE;
 
 struct NODE {	
-	char text[256]; // node text (question or animal name)
+	char* text; // node text (question or animal name)
 
 	NTYPE type; // type of the node
 
 	// relation indices
-	ni_t i;  // self
-	ni_t yi; // yes-branch child
-	ni_t ni; // no-branch child
+	int index;  // self
+	int yes; // yes-branch child
+	int no; // no-branch child
+
+	NODE* tail;
 };
-
-
-// node linked list
-typedef struct NLL NLL;
-
-struct NLL {
-	NODE* val;
-	NLL* tail;
-};
-
 
 
 /* == PROTOTYPES == */
 
-bool file_exists(char* fname);
 void game_start(char* fname);
 
-NODE* node_make(char* text, NTYPE type, int i, int yi, int ni);
-void node_destroy(NODE* node);
+NODE* make_node(char* text, NTYPE type, int i, int yi, int ni);
+void free_node(NODE* node);
 
-int nll_size(NLL* head);
-void nll_append(NLL* head, NLL* to_append);
-void nll_prepend(NLL* head, NLL* to_prepend);
-NLL* nll_make(NODE* node);
-void nll_destroy(NLL* nll);
+int list_size(NODE* head);
+void list_append(NODE* head, NODE* to_append);
 
-NLL* nll_load(char* fname);
-bool nll_save(NLL* head, char* fname);
+NODE* load_list(char* fname);
+bool save_list(NODE* head, char* fname);
+
+
+
+char *strdup(const char *str) {
+    int n = strlen(str) + 1;
+    
+    char *dup = malloc(n);
+    
+    if(dup) {
+        strcpy(dup, str);
+    }
+    return dup;
+}
+
 
 
 /* make game node */
-NODE* node_make(char* text, NTYPE type, int i, int yi, int ni) {
+NODE* make_node(char* text, NTYPE type, int index, int yes, int no) {
 
 	NODE* node = malloc(sizeof(NODE));
 	if (node == NULL) return NULL;
 
-	memset(node, 0, sizeof(NODE)); // clean memory
-
-	node->text[0] = 0;
-	strncat(node->text, text, sizeof(node->text) - 1);
+	node->text = strdup(text); // calls malloc
 	
 	node->type = type;
-	node->i = i;
-	node->yi = yi;
-	node->ni = ni;
+	
+	node->index = index;
+	node->yes = yes;
+	node->no = no;
+
+	node->tail = NULL;
 
 	return node;	
 }
 
 
 /* destroy game node */
-void node_destroy(NODE* node) {
+void free_node(NODE* node) {
 
 	if (node==NULL) return;
+	
+	free_node(node->tail);
+
+	if(node->text != NULL) {
+		free(node->text);
+	}
+	
 	free(node);
 }
 
 
-/* get NLL length */
-int nll_size(NLL* head) {
+/* get list length */
+int list_size(NODE* head) {
 
 	if (head == NULL) return 0;
 	
-	return 1 + nll_size(head->tail);
+	return 1 + list_size(head->tail);
 }
 
 /* append NLL to another */
-void nll_append(NLL* head, NLL* to_append) {
+void list_append(NODE* head, NODE* to_append) {
 
 	if(head == NULL || to_append == NULL) return;
 
 	if (head->tail != NULL) {
-		nll_append(head->tail, to_append);
+		list_append(head->tail, to_append);
 	} else {
 		head->tail = to_append;
 	}
 }
 
-/* prepend NLL to another */
-void nll_prepend(NLL* head, NLL* to_prepend) {
 
-	if (head == NULL || to_prepend == NULL) return;
-
-	NLL* tmp = head;
-
-	head = to_prepend;
-	nll_append(head, tmp);	
-}
-
-/* make a NLL */
-NLL* nll_make(NODE* node) {
-
-	NLL* nll = malloc(sizeof(NLL));
-	if (nll==NULL) return NULL;
-	
-	nll->tail = NULL;
-	nll->val = node;
-	return nll;
-}
-
-/* destroy a NLL and tail, with values */
-void nll_destroy(NLL* nll) {
-	
-	if(nll == NULL) return;
-	
-	nll_destroy(nll->tail);
-	node_destroy(nll->val);
-	free(nll);
-}
-
-
-NODE* nll_get_node(NLL* head, int i) {
+NODE* find_node(NODE* head, int i) {
 	if(head == NULL) return NULL;
-	if(head->val != NULL) {
-		if(head->val->i == i) return head->val;
-	}
+	
+	if(head->index == i) return head;
 
-	return nll_get_node(head->tail, i);
+	return find_node(head->tail, i);
+}
+
+int find_next_index(NODE* head) {
+
+	if(head == NULL) return 0;
+
+	int amax = find_next_index(head->tail);
+
+	if(amax > head->index) {
+		return amax;
+	} else {
+		return head->index+1;
+	}	
+}
+
+int count_of_type(NODE* head, NTYPE type) {
+
+	if(head == NULL) return 0;
+
+	int cnt = count_of_type(head->tail, type);
+
+	if(head->type == type) cnt++;
+
+	return cnt;	
 }
 
 
-NLL* nll_load(char* fname) {
-
+NODE* load_list(char* fname) {
 	FILE* fp = fopen(fname, "rb");
 
 	if (fp != NULL) {
-		int count;
-		
-		if(!fread(&count, sizeof(int), 1, fp)) return NULL;
 
-		NLL* head = NULL;
+		NODE* head = NULL;
 		NODE* node = NULL;
 
-		for(int i=0; i<count; i++) {
+		bool failed = FALSE;
 
-			node = malloc(sizeof(NODE));
-			if(node == NULL) return NULL;
-			if(!fread(node, sizeof(NODE), 1, fp)) return NULL;
+		int v_index;
+		int v_yes;
+		int v_no;
+		char v_type;
+		char v_text[512];
 
-			if (head == NULL) {
-				head = nll_make(node);
-			} else {
-				nll_append(head, nll_make(node));
-			}		
-		}
+		int cnt = 1; // row counter
+
+		#define LOAD_FAIL_MSG " <bg:red><fg:white>Error in data file on line %d!<r>\n"
 		
+		while (!feof(fp)) {
+
+			if (2 != fscanf(fp, "%d %c", &v_index, &v_type)) {
+
+				if(feof(fp)) break;
+				
+				cprintf(LOAD_FAIL_MSG, cnt);
+				failed = TRUE; break;
+			}
+
+			if (v_type == 'Q') {
+				
+				if (3 != fscanf(fp, " (%d,%d): %[^\n]s\n", &v_yes, &v_no, v_text)) {
+					cprintf(LOAD_FAIL_MSG, cnt);
+					failed = TRUE; break;
+				}
+
+				node = make_node(v_text, QST, v_index, v_yes, v_no);
+				
+			} else if(v_type == 'A') {
+				
+				if (1 != fscanf(fp, ": %[^\n]s\n", v_text)) {
+					cprintf(LOAD_FAIL_MSG, cnt);
+					failed = TRUE; break;
+				}
+				
+				node = make_node(v_text, ANS, v_index, NIL, NIL);			
+
+			} else {
+				cprintf(LOAD_FAIL_MSG, cnt);
+				failed = TRUE; break;
+			}
+
+			// add to list
+			if (head == NULL) {
+				head = node;
+			} else {
+				list_append(head, node);
+			}
+
+			cnt++;	
+		}
+
 		fclose(fp);
+
+		// validate
+		node = head;
+		while(!failed && node != NULL) {
+			
+			if(node->type == QST) {
+				
+				int y = node->yes;
+				int n = node->no;
+				
+				if(find_node(head, y) == NULL) {
+					cprintf(" <bg:red><fg:white>Node %d not found in data file!<r>\n", y);
+					failed = TRUE;
+					break;				
+				}
+				
+				if(find_node(head, n) == NULL) {
+					cprintf(" <bg:red><fg:white>Node %d not found in data file!<r>\n", n);
+					failed = TRUE;
+					break;				
+				}
+			}
+
+			node = node->tail;			
+		}
+
+		
+
+		if(failed) return NULL;
 
 		return head;
 		
@@ -180,21 +245,28 @@ NLL* nll_load(char* fname) {
 	}
 }
 
-bool nll_save(NLL* head, char* fname) {
-	// * size_t fwrite(const void *ptr, size_t size_of_elements, size_t number_of_elements, FILE *a_file);
 
-	FILE* fp = fopen(fname, "wb");
+bool save_list(NODE* head, char* fname) {
+	FILE* fp = fopen(fname, "w");
 
 	if (fp) {
-		int count = nll_size(head);
-		
-		if(!fwrite(&count, sizeof(int), 1, fp)) return FALSE;
 
-		NLL* nll = head;
+		NODE* node = head;
 
-		while(nll != NULL) {
-			if(!fwrite(nll->val, sizeof(NODE), 1, fp)) return FALSE;
-			nll = nll->tail;	
+		while(node != NULL) {
+			if(node->type == QST) {
+				fprintf(fp, "%d Q (%d,%d): %s\n", node->index, node->yes, node->no, node->text);
+			}
+			node = node->tail;
+		}
+
+		node = head;
+
+		while(node != NULL) {
+			if(node->type == ANS) {
+				fprintf(fp, "%d A: %s\n", node->index, node->text);					
+			}
+			node = node->tail;	
 		}
 
 		fclose(fp);
@@ -222,7 +294,10 @@ void game_start(char* fname) {
 
 	log_msg(INFO, "Loading tree from: %s", fname);
 
-	NLL* list = nll_load(fname);
+	NODE* list = load_list(fname);
+
+	cprintf("\n <fg:white>Know animals: %d<r>\n", count_of_type(list, ANS));
+
 	
 	char tmp[512];
 	char tmp2[512];
@@ -244,35 +319,34 @@ void game_start(char* fname) {
 				break;
 			}
 
-			NODE* n = node_make(tmp, ANS, 0, NIL, NIL);
-			list = nll_make(n);
+			list = make_node(tmp, ANS, 0, NIL, NIL);
 
 			log_msg(INFO, "Saving file.");
-			nll_save(list, fname);
+			save_list(list, fname);
 			
 		} else {
 			// actual game
 
 			NODE* prev = NULL;
-			NODE* node = nll_get_node(list, 0); // root
+			NODE* cur = find_node(list, 0); // root
 
 			while(TRUE) {
-				if(node->type == QST) {
+				if(cur->type == QST) {
 					// question
 					
-					bool choice = ask_yes_no(node->text);
+					bool choice = ask_yes_no(cur->text);
 
-					prev = node;
+					prev = cur;
 					if (choice) {
-						node = nll_get_node(list, node->yi);
+						cur = find_node(list, cur->yes);
 					} else {
-						node = nll_get_node(list, node->ni);
+						cur = find_node(list, cur->no);
 					}
 					
 				} else {
 					// answer
 
-					sprintf(tmp, "Is it %s?", node->text);
+					sprintf(tmp, "Is it <fg:cyan><b>%s<r>?", cur->text);
 
 					bool choice = ask_yes_no(tmp);
 
@@ -281,80 +355,64 @@ void game_start(char* fname) {
 						break;
 					} else {
 
-						if(NULL == read_animal(tmp, 254)) {
+						if(NULL == read_animal(tmp, 512)) {
 							cprintln(" <bg:red><fg:white>No input, terminating.<r>\n");
 							aborted = TRUE;
 							break;
 						}
 
-						NODE* nn = node_make(tmp, ANS, nll_size(list), NIL, NIL);
+						NODE* nn = make_node(tmp, ANS, find_next_index(list), NIL, NIL);
 						if(nn == NULL) {
 							log_msg(ERROR, "Malloc error");
 							aborted = TRUE;
 							break;
-						}
-
-						NLL* nnwrap = nll_make(nn);
-						if(nnwrap == NULL) {
-							log_msg(ERROR, "Malloc error");
-							aborted = TRUE;
-							break;
-						}
+						}						
+						list_append(list, nn);
 						
-						nll_append(list, nnwrap);
-						
-						sprintf(tmp2, "What <u>question</u> can help me tell apart %s and %s?", node->text, nn->text);
+						sprintf(tmp2, "What <u>question</u> can help me tell apart <fg:cyan><b>%s<r> and <fg:cyan><b>%s<r>?", cur->text, nn->text);
 
-						if(!get_input(tmp, 254, tmp2)) {
+						if(!get_input(tmp, 512, tmp2)) {
 							cprintln(" <bg:red><fg:white>No input, terminating.<r>\n");
 							aborted = TRUE;
 							break;
 						}
 
-						NODE* ndis = node_make(tmp, QST, nll_size(list), NIL, NIL);
+						NODE* ndis = make_node(tmp, QST, find_next_index(list), NIL, NIL);
 						if(ndis == NULL) {
 							log_msg(ERROR, "Malloc error");
 							aborted = TRUE;
 							break;
-						}
+						}						
+						list_append(list, ndis);
 
-						NLL* ndiswrap = nll_make(ndis);
-						if(ndiswrap == NULL) {
-							log_msg(ERROR, "Malloc error");
-							aborted = TRUE;
-							break;
-						}
-						
-						nll_append(list, ndiswrap);
-
-						sprintf(tmp, "What would be the <u>answer for %s</u>?", node->text);
+						sprintf(tmp, "What would be the <u>answer</u> for <fg:cyan><b>%s<r>?", cur->text);
 						bool true_old = ask_yes_no(tmp);
 
 						if(prev == NULL) {
 
-							int sw = ndis->i;
-							ndis->i = node->i;
-							node->i = sw;
+							int sw = ndis->index;
+							ndis->index = cur->index;
+							cur->index = sw;
 							
 						} else {
 
-							if(prev->yi == node->i) {
-								prev->yi = ndis->i;
+							if(prev->yes == cur->index) {
+								prev->yes = ndis->index;
 							} else {
-								prev->ni = ndis->i;
+								prev->no = ndis->index;
 							}
 						}
 
 						if(true_old) {
-							ndis->yi = node->i;
-							ndis->ni = nn->i;
+							ndis->yes = cur->index;
+							ndis->no = nn->index;
 						} else {
-							ndis->yi = nn->i;
-							ndis->ni = node->i;
+							ndis->yes = nn->index;
+							ndis->no = cur->index;
 						}
 
 						log_msg(INFO, "Saving file.");
-						nll_save(list, fname);
+						save_list(list, fname);
 
 						break;
 					}
@@ -368,13 +426,13 @@ void game_start(char* fname) {
 		
 		cprint("<fg:yellow>\n---------------- GAME END ----------------<r>\n");
 
-		if(!ask_yes_no("<b>Do you want to play again?<r>")) break;
+		if(!ask_yes_no("<fg:white>Do you want to play again?<r>")) break;
 	}
 
 	if(!aborted) {
 		log_msg(INFO, "Saving file.");
-		nll_save(list, fname);
+		save_list(list, fname);
 	}
 
-	nll_destroy(list);
+	free_node(list);
 }
