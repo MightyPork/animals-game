@@ -1,5 +1,5 @@
-#ifndef STR_REPLACE_H
-#define STR_REPLACE_H
+#ifndef STRING_UTILS_H
+#define STRING_UTILS_H
 
 	/**
 	 * replace substrings in a newly allocated string
@@ -11,5 +11,15 @@
 	 * @returns newly allocated string with the result
 	 */
 	char* str_replace(const char *src, const char *from, const char *to);
+	
+	/**
+	 * Copy a string to newly allocated memory.
+	 * 
+	 * @param original string
+	 * 
+	 * @returns newly allocated string with the same value
+	 * 
+	 */
+	char *strdup(const char *str);
 
 #endif

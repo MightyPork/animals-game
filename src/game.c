@@ -1,7 +1,8 @@
-#include <string.h>
-
 #include "default.h"
 #include "game.h"
+#include "string_utils.h"
+
+#include <string.h>
 
 /* == DEF == */
 
@@ -39,20 +40,6 @@ void list_append(NODE* head, NODE* to_append);
 
 NODE* load_list(char* fname);
 bool save_list(NODE* head, char* fname);
-
-
-
-char *strdup(const char *str) {
-    int n = strlen(str) + 1;
-    
-    char *dup = malloc(n);
-    
-    if(dup) {
-        strcpy(dup, str);
-    }
-    return dup;
-}
-
 
 
 /* make game node */

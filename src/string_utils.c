@@ -1,4 +1,4 @@
-#include "str_replace.h"
+#include "string_utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,3 +75,16 @@ char* str_replace(const char *src, const char *from, const char *to) {
 	
 	return dest;
 }
+
+
+char *strdup(const char *str) {
+    int n = strlen(str) + 1;
+    
+    char *dup = malloc(n);
+    
+    if(dup) {
+        strcpy(dup, str);
+    }
+    return dup;
+}
+

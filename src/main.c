@@ -20,7 +20,7 @@ void print_help();
 
 bool verbose = FALSE; // extern
 
-char* datafile = "animals.txt";
+char* datafile = "animals.dat";
 
 
 
@@ -101,7 +101,7 @@ void print_help() {
 	cprintln( " <u><b><fg:white>Animals Game<r>" );
 	cprintln( " <fg:lmagenta>usage: animals [-v] [-f DB_FILE] [-h]<r>" );
 	cprintln( "  <b><fg:white>-v, --verbose<r>  Enable extra debug messages" );
-	cprintln( "  <b><fg:white>-f, --file<r>     Specify location of data file (default: animals.dat)" );
+	cprintln( "  <b><fg:white>-f, --file<r>     Specify location of data file" );
 	cprintln( "  <b><fg:white>-h, --help<r>     Show this help" );
 	endl();
 }
