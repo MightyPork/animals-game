@@ -1,6 +1,6 @@
 
 CC=gcc
-CFLAGS=-g -Wall -std=gnu99 -O0 -Wfatal-errors
+CFLAGS=-g -Wall -std=gnu99 -O0 -Wall -pedantic -ftrapv
 #-Werror-implicit-function-declaration -Werror  -Wundef -ftrapv -O2 -Wshadow -save-temps
 RM=rm -f
 
@@ -25,7 +25,7 @@ build: .compilemsg $(OBJS)
 	@-printf '\e[36mCompilation\e[0m\n'
 
 run:
-	@-printf '\e[36mLaunching $(TARGET)\e[0m\n'
+	@-printf '\e[36mLaunching .\\$(TARGET)\e[0m\n'
 	@-./$(TARGET)
 
 

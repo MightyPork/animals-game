@@ -5,15 +5,21 @@
 	bool ask_yes_no(char* prompt);
 	
 	/* Get user input of max length */
-	char* get_input(int len, char* prompt);
+	char* get_input(char* target, int len, char* prompt);
 	
 	/* print with color tags, newline */
-	void println(char* text);
+	void cprintln(char* text);
 	
 	/* print with color tags */
-	void print(char* text);
+	void cprint(char* text);
+	
+	/* printf with color tags */
+	void cprintf(char* text, ...);
 	
 	/* newline */
 	void endl();
+
+	/* wait for end of line, discard read stuff. */
+	void wait_enter();
 
 #endif

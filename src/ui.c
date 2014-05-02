@@ -1,9 +1,12 @@
 #include "default.h"
 #include "ui.h"
 #include "colors.h"
+#include "string.h"
+
+#include <stdarg.h>
 
 // private prototype
-char* _print_prompt(char* prompt);
+void _print_prompt(char* prompt);
 
 
 bool ask_yes_no(char* prompt) {
@@ -12,9 +15,8 @@ bool ask_yes_no(char* prompt) {
 		char c;
 		
 		endl();
-		print(" ");
-		println(prompt);
-		endl();
+		cprint(" ");
+		cprintln(prompt);
 		_print_prompt("Y/N");
 		
 		c = getchar();
@@ -22,61 +24,82 @@ bool ask_yes_no(char* prompt) {
 		
 		// yes
 		if(c=='y' || c=='Y' || c=='a' || c=='A') {
-			endl();
 			return TRUE;
 		}
 		
 		// no
 		if(c=='n' || c=='N') {
-			endl();
 			return FALSE;
 		}
 		
 		endl();
-		print(" <b><bg:red><fg:white>Please, try again.<r>\n");
+		cprint(" <b><bg:red><fg:white>Please, try again.<r>\n");
 	}
 }
 
-char* get_input(int len, char* prompt) {
+char* get_input(char* target, int len, char* prompt) {
 	
-	char* buffer = malloc(sizeof(char)*len);
+	endl();
+	cprint(" ");
+	cprintln(prompt);
+	_print_prompt("IN");
 	
-	_print_prompt(prompt);
-	
-	if(!fgets(buffer, len, stdin)) {
-		free(buffer);
+	if(!fgets(target, len, stdin)) {
 		return NULL;
 	}
+
+	int alen = strlen(target);
+	if(target[alen-1]=='\n') {
+		target[alen-1] = 0;
+	}
+
+	if(strlen(target) == 0) return NULL;
 	
-	return buffer;
+	return target;
 }
 
 
-char* _print_prompt(char* prompt) {
-	print(" <fg:green><b>[");
-	print(prompt);
-	print("]:</b></fg> ");	
+void _print_prompt(char* prompt) {
+	cprint(" <fg:green><b>[");
+	cprint(prompt);
+	cprint("]:</b></fg> ");	
 }
 
 
-void println(char* text) {
-	print(text);
+void cprintln(char* text) {
+	cprint(text);
 	endl();
 }
 
 
-void print(char* text) {
+void cprint(char* text) {
 	char* colorized = color_tags(text);
 	if(colorized != NULL) {
 		fputs(colorized, stdout);
 		free(colorized);
-	}else{
-		puts("ERROR in PRINT");
+	} else {
+		puts("ERROR in CPRINT");
 		fputs(text, stdout);
 	}
 }
 
+void cprintf(char* format, ...) {	
+	va_list args;
+    va_start(args, format);
+	char* m;
+	if(vasprintf(&m, format, args) == -1) return;
+    va_end(args);
+	
+	cprint(m);
+	
+	free(m);
+}
 
 void endl() {
 	puts("");
+}
+
+void wait_enter() {
+	scanf("%*[^\n]");
+	scanf("%*c");
 }

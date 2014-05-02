@@ -98,10 +98,10 @@ void parse_opts (int argc, char* argv[]) {
 
 void print_help() {
 	endl();
-	println( " <u><b><fg:white>Animals Game<r>" );
-	println( " <fg:lmagenta>usage: animals [-v] [-f DB_FILE] [-h]<r>" );
-	println( "  <b><fg:white>-v, --verbose<r>  Enable extra debug messages" );
-	println( "  <b><fg:white>-f, --file<r>     Specify location of data file (default: animals.dat)" );
-	println( "  <b><fg:white>-h, --help<r>     Show this help" );
+	cprintln( " <u><b><fg:white>Animals Game<r>" );
+	cprintln( " <fg:lmagenta>usage: animals [-v] [-f DB_FILE] [-h]<r>" );
+	cprintln( "  <b><fg:white>-v, --verbose<r>  Enable extra debug messages" );
+	cprintln( "  <b><fg:white>-f, --file<r>     Specify location of data file (default: animals.dat)" );
+	cprintln( "  <b><fg:white>-h, --help<r>     Show this help" );
 	endl();
 }

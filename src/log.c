@@ -18,14 +18,14 @@ void log_msg(int level, char* message, ...) {
 		default:
 		case INFO:
 			if(verbose) {
-				print("<fg:green>INFO:</fg> ");
-				println(m);
+				cprint("<fg:green>INFO:</fg> ");
+				cprintln(m);
 			}
 			break;
 			
 		case ERROR:
-			print("<fg:red>ERROR:</fg> ");
-			println(m);
+			cprint("<fg:red>ERROR:</fg> ");
+			cprintln(m);
 			break;
 	}
 	
