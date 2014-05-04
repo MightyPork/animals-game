@@ -9,10 +9,11 @@
 18 Q (3,20): Does it give milk?
 20 Q (19,30): Does it chase mice?
 22 Q (21,26): Is it insect?
-24 Q (23,11): Does it eat human flesh?
+24 Q (23,32): Does it eat human flesh?
 26 Q (1,28): Is it serpent?
 28 Q (25,27): Does it have a shell?
 30 Q (29,17): Is it a bird?
+32 Q (31,11): Does it look like a snake?
 2 A: pig
 1 A: snake
 3 A: cow
@@ -29,3 +30,4 @@
 25 A: snail
 27 A: snail
 29 A: turkey
+31 A: electric eel
