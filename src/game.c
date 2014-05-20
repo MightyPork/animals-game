@@ -283,7 +283,7 @@ void game_start(char* fname) {
 
 	NODE* list = load_list(fname);
 
-	cprintf("\n <fg:white>Know animals: %d<r>\n", count_of_type(list, ANS));
+	cprintf("\n <fg:white>Known animals: %d<r>\n", count_of_type(list, ANS));
 
 	
 	char tmp[512];
