@@ -93,6 +93,11 @@ void parse_opts (int argc, char* argv[]) {
 	
 	log_msg(INFO, "Verbose mode enabled.");
 	log_msg(INFO, "Data file: %s", datafile);
+	
+	if(datafile == NULL) {
+		cprintln(" <bg:red><fg:white>No data file, terminating.<r>\n");
+		exit(1);
+	}
 }
 
 

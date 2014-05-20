@@ -97,7 +97,7 @@ void list_append(NODE* head, NODE* to_append) {
 	}
 }
 
-
+/* find a node of the index in list */
 NODE* find_node(NODE* head, int i) {
 	if(head == NULL) return NULL;
 	
@@ -106,6 +106,7 @@ NODE* find_node(NODE* head, int i) {
 	return find_node(head->tail, i);
 }
 
+/* find next free index in the list */
 int find_next_index(NODE* head) {
 
 	if(head == NULL) return 0;
@@ -119,6 +120,7 @@ int find_next_index(NODE* head) {
 	}	
 }
 
+/* count nodes in list of the given type */
 int count_of_type(NODE* head, NTYPE type) {
 
 	if(head == NULL) return 0;
@@ -130,7 +132,7 @@ int count_of_type(NODE* head, NTYPE type) {
 	return cnt;	
 }
 
-
+/* load node list from a data file */
 NODE* load_list(char* fname) {
 	FILE* fp = fopen(fname, "rb");
 
@@ -233,6 +235,7 @@ NODE* load_list(char* fname) {
 }
 
 
+/* save a node list to a data file */
 bool save_list(NODE* head, char* fname) {
 	FILE* fp = fopen(fname, "w");
 
@@ -266,6 +269,7 @@ bool save_list(NODE* head, char* fname) {
 }
 
 
+/* ask user for an animal */
 char* read_animal(char* target, int len) {
 	cprint("\n <b><fg:cyan>*** You win! ***<r>\n");
 	if(!get_input(target, len, "What <u>animal</u> is it?")) return NULL;
@@ -275,6 +279,7 @@ char* read_animal(char* target, int len) {
 	return target;
 }
 
+/* start the game */
 void game_start(char* fname) {
 	cprint("\n <b><fg:cyan>Animals game<r>\n");
 	cprint(" <fg:cyan>© MightyPork 2014<r>\n");
@@ -337,17 +342,22 @@ void game_start(char* fname) {
 
 					bool choice = ask_yes_no(tmp);
 
+					// was the guess right?
 					if (choice) {
+						// yes
 						cprint("\n <b><fg:cyan>*** I win! ***<r>\n");
 						break;
 					} else {
+						// no
 
+						// ask what it was
 						if(NULL == read_animal(tmp, 512)) {
 							cprintln(" <bg:red><fg:white>No input, terminating.<r>\n");
 							aborted = TRUE;
 							break;
 						}
 
+						// make a new node for the new animal
 						NODE* nn = make_node(tmp, ANS, find_next_index(list), NIL, NIL);
 						if(nn == NULL) {
 							log_msg(ERROR, "Malloc error");
@@ -356,6 +366,7 @@ void game_start(char* fname) {
 						}						
 						list_append(list, nn);
 						
+						// get question
 						sprintf(tmp2, "What <u>question</u> can help me tell apart <fg:cyan><b>%s<r> and <fg:cyan><b>%s<r>?", cur->text, nn->text);
 
 						if(!get_input(tmp, 512, tmp2)) {
@@ -363,7 +374,8 @@ void game_start(char* fname) {
 							aborted = TRUE;
 							break;
 						}
-
+						
+						// make a question node
 						NODE* ndis = make_node(tmp, QST, find_next_index(list), NIL, NIL);
 						if(ndis == NULL) {
 							log_msg(ERROR, "Malloc error");
@@ -375,14 +387,17 @@ void game_start(char* fname) {
 						sprintf(tmp, "What would be the <u>answer</u> for <fg:cyan><b>%s<r>?", cur->text);
 						bool true_old = ask_yes_no(tmp);
 
+						
 						if(prev == NULL) {
-
+							
+							// prev is null - displacing head
 							int sw = ndis->index;
 							ndis->index = cur->index;
 							cur->index = sw;
 							
 						} else {
 
+							// reassign previous question
 							if(prev->yes == cur->index) {
 								prev->yes = ndis->index;
 							} else {
@@ -390,6 +405,7 @@ void game_start(char* fname) {
 							}
 						}
 
+						// assign question answers based on answer for the new question
 						if(true_old) {
 							ndis->yes = cur->index;
 							ndis->no = nn->index;
